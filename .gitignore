@@ -1,4 +1,5 @@
 .env
+venv
 downloads/
 *.torrent
 __pycache__/
