@@ -66,3 +66,6 @@
 
 - Весь код на Python 3, Dockerfile универсален (Ubuntu 22.04 + libtorrent).
 - Можно быстро адаптировать под magnet-ссылки, web-интерфейс, очереди и т.д.
+
+**Автор:** Aleksandr Myasoed 
+**Лицензия:** MIT

@@ -1,16 +1,47 @@
+"""
+torrent_downloader.py
+
+Скрипт для скачивания файлов по .torrent через libtorrent.
+Использует переменные окружения из .env для настройки путей и портов.
+Работает в Docker-контейнере, поддерживает подробный прогресс и логирование.
+"""
+
 import os
 import sys
 import time
+
 import libtorrent as lt
 from dotenv import load_dotenv
 
+
 def log(msg):
+    """
+    Выводит информационное сообщение в стандартный вывод.
+
+    Args:
+        msg (str): Сообщение для вывода.
+    """
     print(f"[INFO] {msg}")
 
+
 def log_error(msg):
+    """
+    Выводит сообщение об ошибке в стандартный вывод.
+
+    Args:
+        msg (str): Сообщение об ошибке.
+    """
     print(f"[ERROR] {msg}")
 
+
 def main():
+    """
+    Точка входа в программу.
+
+    Загружает настройки из .env, инициализирует libtorrent,
+    добавляет торрент в сессию, отслеживает прогресс скачивания
+    и выводит результат. Обрабатывает основные ошибки и логирует шаги.
+    """
     # Загружаем переменные окружения из .env
     load_dotenv()
     torrent_path = os.getenv("TORRENT_PATH")
@@ -43,9 +74,9 @@ def main():
         log(f"Чтение .torrent файла: {torrent_path}")
         info = lt.torrent_info(torrent_path)
         params = {
-            'save_path': save_path,
-            'storage_mode': lt.storage_mode_t(2),
-            'ti': info
+            "save_path": save_path,
+            "storage_mode": lt.storage_mode_t(2),
+            "ti": info,
         }
 
         log("Добавление торрента в сессию...")
@@ -92,5 +123,9 @@ def main():
         log_error(f"{type(e).__name__}: {e}")
         sys.exit(3)
 
+
 if __name__ == "__main__":
+    """
+    Запуск основной функции main при старте скрипта как самостоятельной программы.
+    """
     main()
