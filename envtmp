@@ -1,0 +1,4 @@
+TORRENT_PATH=/app/you-torent-file-name.torrent
+SAVE_PATH=/app/downloads
+LISTEN_PORT_START=6881
+LISTEN_PORT_END=6891
