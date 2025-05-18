@@ -1,0 +1,17 @@
+# Не копировать локальные загрузки, видео, временные и скрытые папки
+downloads/
+*.mp4
+*.mkv
+*.avi
+*.part
+*.tmp
+__pycache__/
+*.pyc
+*.pyo
+.env
+.DS_Store
+*.log
+*.swp
+node_modules/
+venv/
+torrents/
