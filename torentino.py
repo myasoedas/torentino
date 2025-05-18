@@ -1,11 +1,12 @@
 """
-torrent_downloader.py
+torentino.py
 
 Скрипт для скачивания файлов по .torrent через libtorrent.
-Использует переменные окружения из .env для настройки путей и портов.
-Работает в Docker-контейнере, поддерживает подробный прогресс и логирование.
+Поддерживает переменные окружения и аргументы командной строки.
+Работает в Docker-контейнере, поддерживает прогресс-бар и логирование.
 """
 
+import argparse
 import os
 import sys
 import time
@@ -15,39 +16,50 @@ from dotenv import load_dotenv
 
 
 def log(msg):
-    """
-    Выводит информационное сообщение в стандартный вывод.
-
-    Args:
-        msg (str): Сообщение для вывода.
-    """
     print(f"[INFO] {msg}")
 
 
 def log_error(msg):
-    """
-    Выводит сообщение об ошибке в стандартный вывод.
-
-    Args:
-        msg (str): Сообщение об ошибке.
-    """
     print(f"[ERROR] {msg}")
 
 
-def main():
-    """
-    Точка входа в программу.
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Скрипт для скачивания файлов по .torrent через libtorrent."
+    )
+    parser.add_argument(
+        "--torrent",
+        help="Путь к .torrent-файлу (или переменная TORRENT_PATH)",
+        required=False
+    )
+    parser.add_argument(
+        "--save-dir",
+        help="Папка для сохранения файлов (или SAVE_PATH, по умолчанию /app/downloads)",
+        required=False
+    )
+    parser.add_argument(
+        "--port-start",
+        type=int,
+        help="Начальный порт (или LISTEN_PORT_START, по умолчанию 6881)",
+        required=False
+    )
+    parser.add_argument(
+        "--port-end",
+        type=int,
+        help="Конечный порт (или LISTEN_PORT_END, по умолчанию 6891)",
+        required=False
+    )
+    return parser.parse_args()
 
-    Загружает настройки из .env, инициализирует libtorrent,
-    добавляет торрент в сессию, отслеживает прогресс скачивания
-    и выводит результат. Обрабатывает основные ошибки и логирует шаги.
-    """
-    # Загружаем переменные окружения из .env
+
+def main():
     load_dotenv()
-    torrent_path = os.getenv("TORRENT_PATH")
-    save_path = os.getenv("SAVE_PATH", "/app/downloads")
-    port_start = int(os.getenv("LISTEN_PORT_START", "6881"))
-    port_end = int(os.getenv("LISTEN_PORT_END", "6891"))
+    args = parse_args()
+
+    torrent_path = args.torrent or os.getenv("TORRENT_PATH")
+    save_path = args.save_dir or os.getenv("SAVE_PATH", "/app/downloads")
+    port_start = args.port_start or int(os.getenv("LISTEN_PORT_START", "6881"))
+    port_end = args.port_end or int(os.getenv("LISTEN_PORT_END", "6891"))
 
     log("Запуск загрузчика торрентов")
     log(f"TORRENT_PATH: {torrent_path}")
@@ -55,9 +67,8 @@ def main():
     log(f"LISTEN_PORT_START: {port_start}")
     log(f"LISTEN_PORT_END: {port_end}")
 
-    # Проверяем параметры
     if not torrent_path:
-        log_error("Не указан путь к торрент-файлу (TORRENT_PATH).")
+        log_error("Не указан путь к торрент-файлу (TORRENT_PATH или --torrent).")
         sys.exit(1)
     if not os.path.exists(torrent_path):
         log_error(f"Файл не найден: {torrent_path}")
@@ -104,11 +115,10 @@ def main():
             time.sleep(1)
 
         elapsed = time.time() - start_time
-        print()  # новая строка после прогресс-бара
+        print()
         log("Скачивание завершено!")
         log(f"Файлы сохранены в: {save_path}")
 
-        # Показать все скачанные файлы
         log("Список файлов:")
         for root, dirs, files in os.walk(save_path):
             for file in files:
@@ -125,7 +135,4 @@ def main():
 
 
 if __name__ == "__main__":
-    """
-    Запуск основной функции main при старте скрипта как самостоятельной программы.
-    """
     main()

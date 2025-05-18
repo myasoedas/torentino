@@ -15,4 +15,4 @@ RUN python3 -m pip install --no-cache-dir python-dotenv
 
 VOLUME ["/app/downloads"]
 
-CMD ["python3", "torrent_downloader.py"]
+ENTRYPOINT ["python3", "torentino.py"]
