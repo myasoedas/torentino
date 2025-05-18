@@ -1,4 +1,7 @@
-TORRENT_PATH=/app/you-torent-file-name.torrent
 SAVE_PATH=/app/downloads
 LISTEN_PORT_START=6881
 LISTEN_PORT_END=6891
+NO_PEERS_TIMEOUT=300
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID=
+# TORRENT_PATH=... # Опционально: если нужен конкретный файл
